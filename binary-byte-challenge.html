@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Practice converting 8-bit binary bytes to decimal values.">
+  <title>Binary Byte Challenge | FernandoR12</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #172033;
+      background: #f2f5fb;
+      font-synthesis: none;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    a {
+      color: #284fc7;
+    }
+
+    .page {
+      width: min(100% - 2rem, 760px);
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      font-weight: 650;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .challenge {
+      padding: clamp(1.25rem, 5vw, 2.5rem);
+      border: 1px solid #dce3f0;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 18px 50px rgb(28 43 79 / 8%);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.5rem;
+      color: #405ec1;
+      font-size: 0.8rem;
+      font-weight: 750;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 3rem);
+      letter-spacing: -0.04em;
+    }
+
+    .intro {
+      max-width: 58ch;
+      margin: 0.75rem 0 1.75rem;
+      color: #4c5870;
+      line-height: 1.6;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .mode-field {
+      display: grid;
+      gap: 0.35rem;
+      color: #34415a;
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    select,
+    input,
+    button {
+      min-height: 44px;
+      border: 1px solid #c8d1e2;
+      border-radius: 10px;
+      font: inherit;
+    }
+
+    select {
+      padding: 0.55rem 2.5rem 0.55rem 0.75rem;
+      color: #172033;
+      background: #fff;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      color: #172033;
+      background: #fff;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 0.6rem 1rem;
+      color: #fff;
+      background: #284fc7;
+      border-color: #284fc7;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button:hover:not(:disabled) {
+      background: #1f3fa3;
+    }
+
+    button:focus-visible,
+    select:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 3px solid #f0a72e;
+      outline-offset: 3px;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin: 1.25rem 0;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      background: #f2f5fb;
+      color: #34415a;
+      font-weight: 650;
+    }
+
+    .scoreboard p {
+      margin: 0;
+    }
+
+    .byte {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: clamp(0.3rem, 1.5vw, 0.65rem);
+      margin: 1.5rem 0 1.25rem;
+    }
+
+    .bit {
+      display: grid;
+      justify-items: center;
+      gap: 0.4rem;
+      padding: 0.65rem 0.15rem;
+      border: 2px solid #dce3f0;
+      border-radius: 12px;
+      background: #f9faff;
+    }
+
+    .bit-digit {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: clamp(1.25rem, 4vw, 2rem);
+      font-weight: 800;
+    }
+
+    .bit-position {
+      color: #526079;
+      font-size: clamp(0.62rem, 2vw, 0.78rem);
+      white-space: nowrap;
+    }
+
+    .question {
+      margin: 0 0 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .answer-form {
+      display: flex;
+      align-items: end;
+      gap: 0.65rem;
+    }
+
+    .answer-field {
+      display: grid;
+      flex: 1;
+      gap: 0.35rem;
+      color: #34415a;
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .feedback {
+      min-height: 3.25rem;
+      margin: 1rem 0 0;
+      color: #34415a;
+      line-height: 1.55;
+    }
+
+    .feedback[data-result="correct"] {
+      color: #17643e;
+    }
+
+    .feedback[data-result="incorrect"] {
+      color: #9b351f;
+    }
+
+    .next-row {
+      display: flex;
+      justify-content: flex-end;
+      min-height: 44px;
+      margin-top: 0.75rem;
+    }
+
+    .next-row button[hidden] {
+      display: none;
+    }
+
+    .hint {
+      margin: 1.5rem 0 0;
+      padding-top: 1rem;
+      border-top: 1px solid #e4e9f2;
+      color: #526079;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        width: min(100% - 1rem, 760px);
+        padding-top: 1rem;
+      }
+
+      .scoreboard {
+        font-size: 0.9rem;
+      }
+
+      .answer-form {
+        align-items: stretch;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back-link" href="https://fernandor12.github.io/">← Back to portfolio</a>
+    <section class="challenge" aria-labelledby="title">
+      <p class="eyebrow">Binary practice</p>
+      <h1 id="title">Binary Byte Challenge</h1>
+      <p class="intro">Convert the full 8-bit byte to its decimal value. Each bit represents a power of 2, from 1 on the right to 128 on the left.</p>
+
+      <div class="controls">
+        <label class="mode-field" for="mode">
+          Challenge mode
+          <select id="mode">
+            <option value="easy">Easy — 4 bits (0–15)</option>
+            <option value="normal">Normal — 6 bits (0–63)</option>
+            <option value="hard">Hard — 8 bits (0–255)</option>
+          </select>
+        </label>
+        <label class="mode-field" for="time-limit">
+          Time limit (seconds)
+          <input id="time-limit" type="number" min="1" max="3600" step="1" value="60" required>
+        </label>
+        <button id="start" type="button">Start challenge</button>
+      </div>
+
+      <div class="scoreboard" aria-live="polite">
+        <p id="score">Correct: 0</p>
+        <p id="timer">Time: —</p>
+      </div>
+
+      <div id="byte" class="byte" role="group" aria-label="8-bit binary byte">
+        <div class="bit"><span class="bit-digit">?</span><span class="bit-position">bit 7</span></div>
+        <div class="bit"><span class="bit-digit">?</span><span class="bit-position">bit 6</span></div>
+        <div class="bit"><span class="bit-digit">?</span><span class="bit-position">bit 5</span></div>
+        <div class="bit"><span class="bit-digit">?</span><span class="bit-position">bit 4</span></div>
+        <div class="bit"><span class="bit-digit">?</span><span class="bit-position">bit 3</span></div>
+        <div class="bit"><span class="bit-digit">?</span><span class="bit-position">bit 2</span></div>
+        <div class="bit"><span class="bit-digit">?</span><span class="bit-position">bit 1</span></div>
+        <div class="bit"><span class="bit-digit">?</span><span class="bit-position">bit 0</span></div>
+      </div>
+
+      <p id="question" class="question">Choose a difficulty and time, then start when you are ready.</p>
+      <form id="answer-form" class="answer-form">
+        <label class="answer-field" for="answer">Decimal value of the whole byte
+          <input id="answer" type="number" min="0" max="255" step="1" inputmode="numeric" required disabled>
+        </label>
+        <button id="submit-answer" type="submit" disabled>Check answer</button>
+      </form>
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+      <div class="next-row">
+        <button id="next" type="button" hidden>Next question</button>
+      </div>
+
+      <p class="hint">To convert a byte, add the place values for every bit that is 1: 128, 64, 32, 16, 8, 4, 2, and 1. Easy uses the rightmost 4 bits, Normal uses 6 bits, and Hard uses all 8 bits.</p>
+    </section>
+  </main>
+
+  <script>
+    const modes = {
+      easy: { maxValue: 15 },
+      normal: { maxValue: 63 },
+      hard: { maxValue: 255 }
+    };
+
+    const modeSelect = document.querySelector("#mode");
+    const timeLimitInput = document.querySelector("#time-limit");
+    const startButton = document.querySelector("#start");
+    const nextButton = document.querySelector("#next");
+    const byteElement = document.querySelector("#byte");
+    const answerForm = document.querySelector("#answer-form");
+    const answerInput = document.querySelector("#answer");
+    const submitAnswerButton = document.querySelector("#submit-answer");
+    const questionElement = document.querySelector("#question");
+    const feedbackElement = document.querySelector("#feedback");
+    const scoreElement = document.querySelector("#score");
+    const timerElement = document.querySelector("#timer");
+
+    let timerId = null;
+    let timeLeft = null;
+    let correctAnswers = 0;
+    let active = false;
+    let currentByte = null;
+
+    function renderScore() {
+      scoreElement.textContent = `Correct: ${correctAnswers}`;
+    }
+
+    function renderTimer() {
+      timerElement.textContent = timeLeft === null ? "Time: —" : `Time: ${timeLeft}s`;
+    }
+
+    function finishChallenge() {
+      active = false;
+      clearInterval(timerId);
+      timerId = null;
+      modeSelect.disabled = false;
+      timeLimitInput.disabled = false;
+      startButton.textContent = "Start challenge";
+      nextButton.hidden = true;
+      answerInput.disabled = true;
+      submitAnswerButton.disabled = true;
+      questionElement.textContent = `Time is up! You got ${correctAnswers} correct.`;
+      feedbackElement.textContent = "Choose a difficulty and time, then start a new challenge.";
+      feedbackElement.dataset.result = "";
+    }
+
+    function restartChallenge() {
+      active = false;
+      clearInterval(timerId);
+      timerId = null;
+      timeLeft = null;
+      currentByte = null;
+      modeSelect.disabled = false;
+      timeLimitInput.disabled = false;
+      answerInput.disabled = true;
+      submitAnswerButton.disabled = true;
+      nextButton.hidden = true;
+      startButton.textContent = "Start challenge";
+      questionElement.textContent = "Choose a difficulty and time, then start when you are ready.";
+      feedbackElement.textContent = "";
+      feedbackElement.dataset.result = "";
+      renderTimer();
+    }
+
+    function showQuestion() {
+      if (!active) return;
+
+      nextButton.hidden = true;
+      feedbackElement.textContent = "";
+      feedbackElement.dataset.result = "";
+
+      const maxValue = modes[modeSelect.value].maxValue;
+      currentByte = Math.floor(Math.random() * (maxValue + 1));
+      const bits = currentByte.toString(2).padStart(8, "0");
+      byteElement.setAttribute("aria-label", `Binary byte ${bits}`);
+      byteElement.innerHTML = "";
+      for (let index = 7; index >= 0; index -= 1) {
+        const bit = document.createElement("div");
+        bit.className = "bit";
+        bit.setAttribute("aria-label", `Bit ${index}, digit ${bits[7 - index]}`);
+
+        const digit = document.createElement("span");
+        digit.className = "bit-digit";
+        digit.textContent = bits[7 - index];
+        const position = document.createElement("span");
+        position.className = "bit-position";
+        position.textContent = `bit ${index}`;
+
+        bit.append(digit, position);
+        byteElement.append(bit);
+      }
+
+      questionElement.textContent = "What decimal number does this whole byte represent?";
+      answerInput.value = "";
+      answerInput.disabled = false;
+      submitAnswerButton.disabled = false;
+      answerInput.focus();
+    }
+
+    function checkAnswer(event) {
+      event.preventDefault();
+      if (!active || currentByte === null) return;
+
+      const answer = Number(answerInput.value);
+      const isCorrect = answer === currentByte;
+      if (isCorrect) correctAnswers += 1;
+      renderScore();
+
+      answerInput.disabled = true;
+      submitAnswerButton.disabled = true;
+      const expandedForm = [...byteElement.querySelectorAll(".bit-digit")]
+        .map((digit, index) => digit.textContent === "1" ? 2 ** (7 - index) : null)
+        .filter((value) => value !== null)
+        .join(" + ") || "0";
+      feedbackElement.dataset.result = isCorrect ? "correct" : "incorrect";
+      feedbackElement.textContent = `${isCorrect ? "Correct!" : `Not quite — the answer is ${currentByte}.`} Add the place values where the bit is 1: ${expandedForm} = ${currentByte}.`;
+      nextButton.hidden = false;
+      nextButton.focus();
+    }
+
+    function startChallenge() {
+      if (!timeLimitInput.reportValidity()) return;
+
+      clearInterval(timerId);
+      timerId = null;
+      correctAnswers = 0;
+      currentByte = null;
+      active = true;
+      modeSelect.disabled = true;
+      timeLimitInput.disabled = true;
+      startButton.textContent = "Restart challenge";
+      feedbackElement.textContent = "";
+      feedbackElement.dataset.result = "";
+      renderScore();
+
+      const selectedMode = modes[modeSelect.value];
+      timeLeft = Number(timeLimitInput.value);
+      renderTimer();
+      showQuestion();
+
+      timerId = setInterval(() => {
+        timeLeft -= 1;
+        renderTimer();
+        if (timeLeft <= 0) finishChallenge();
+      }, 1000);
+    }
+
+    startButton.addEventListener("click", () => {
+      if (active) {
+        restartChallenge();
+      } else {
+        startChallenge();
+      }
+    });
+    nextButton.addEventListener("click", showQuestion);
+    answerForm.addEventListener("submit", checkAnswer);
+  </script>
+</body>
+</html>
